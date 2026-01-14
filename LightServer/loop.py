@@ -8,31 +8,42 @@ LED_PIN = 18
 strip = PixelStrip(LED_COUNT, LED_PIN)
 strip.begin()
 
+def from_h(h):
+    h = h % 360
+    x = 1 - abs((h / 60) % 2 - 1)
+    if 0 <= h < 60:
+        r, g, b = 1, x, 0
+    elif 60 <= h < 120:
+        r, g, b = x, 1, 0
+    elif 120 <= h < 180:
+        r, g, b = 0, 1, x
+    elif 180 <= h < 240:
+        r, g, b = 0, x, 1
+    elif 240 <= h < 300:
+        r, g, b = x, 0, 1
+    else:
+        r, g, b = 1, 0, x
+    return r, g, b
+
+def h(x, t, h1, h2):
+	p = x - t
+	p = p % LED_COUNT
+	if p < LED_COUNT * 0.4:
+		return h1
+	if p > LED_COUNT * 0.6:
+		return h2
+	return (p - LED_COUNT * 0.4) / (LED_COUNT * 0.2) * (h2 - h1) + h1 
+
 if __name__ == "__main__":
-	r = int(sys.argv[1])
-	g = int(sys.argv[2])
-	b = int(sys.argv[3])
-	r2 = int(sys.argv[4])
-	g2 = int(sys.argv[5])
-	b2 = int(sys.argv[6])
-	length = int(sys.argv[7])
-	speed = int(sys.argv[8])
+	h1 = int(sys.argv[1])
+	h2 = int(sys.argv[2])
 	
-	for j in range(LED_COUNT):
-		if j < length:
-			strip.setPixelColor(j, Color(r, g, b))
-		else:
-			strip.setPixelColor(j, Color(r2, g2, b2))
-		
-	i = 0
+	t = 0
 	while True:
-		for j in range(i, i + speed):
-			j = j % 60
-			strip.setPixelColor(j, Color(r2, g2, b2))
-		for j in range(i + length, i + length + speed):
-			j = j % 60
-			strip.setPixelColor(j, Color(r, g, b))
-		i += speed
-		i = i % LED_COUNT
+		for x in range(LED_COUNT):
+			hue = h(x, t, h1, h2)
+			r, g, b = from_h(hue)
+			strip.setPixelColor(x, Color(r * 255, g * 255, b * 255))
 		strip.show()
+		t += 1
 		time.sleep(0.03)
