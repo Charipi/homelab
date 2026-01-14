@@ -8,7 +8,7 @@ from dotenv import dotenv_values
 atexit.register(off)
 config = dotenv_values(".env")
 
-model = vosk.Model(config["VOSK_MODEL"])
+model = vosk.Model(config["VOICE_CLIENT_VOSK_MODEL"])
 recognizer = vosk.KaldiRecognizer(model, 16000)
 
 if __name__ == "__main__":
@@ -22,6 +22,6 @@ if __name__ == "__main__":
             result = json.loads(recognizer.Result())
             if 'text' in result:
                 text = result['text']
-                if config["ACTIVATION"] in text:
-                    command = text.split(config["ACTIVATION"], 1)[1].strip()
+                if config["VOICE_CLIENT_ACTIVATION"] in text:
+                    command = text.split(config["VOICE_CLIENT_ACTIVATION"], 1)[1].strip()
                     run(command)
