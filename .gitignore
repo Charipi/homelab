@@ -1,2 +1,4 @@
 .env
+.venv/
 vosk*
+__pycache__/
