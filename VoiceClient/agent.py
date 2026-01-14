@@ -17,10 +17,10 @@ def set_color(red: int, green: int, blue: int) -> str:
 
 @tool
 def set_color_loop(primary_red: int, primary_green: int, primary_blue: int, secondary_red: int, secondary_green: int, secondary_blue: int) -> str:
-    """Set the LED strip to cycle the primary rgb color around the secondary rgb color,
+    """Set the LED strip to cycle the primary and secondary rgb colors in a loop,
     with the primary color being the first three arguments and the secondary color being the next three arguments.
     All rgb values are between 0 and 255. Returns the success value."""
-    return execute_remote_python(script_path=f'{config["LIGHT_SERVER_REPO_PATH"]}/LightServer/loop.py', args=[str(primary_red), str(primary_green), str(primary_blue), str(secondary_red), str(secondary_green), str(secondary_blue), "20", "1"])
+    return execute_remote_python(script_path=f'{config["LIGHT_SERVER_REPO_PATH"]}/LightServer/loop.py', args=[str(primary_red), str(primary_green), str(primary_blue), str(secondary_red), str(secondary_green), str(secondary_blue), "30", "1"])
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-2.5-flash", 
