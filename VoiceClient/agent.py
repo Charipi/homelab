@@ -16,11 +16,16 @@ def set_color(red: int, green: int, blue: int) -> str:
 	return execute_remote_python(script_path=f'{config["LIGHT_SERVER_REPO_PATH"]}/LightServer/solid.py', args=[str(red), str(green), str(blue)])
 
 @tool
-def set_color_loop(primary_red: int, primary_green: int, primary_blue: int, secondary_red: int, secondary_green: int, secondary_blue: int) -> str:
-	"""Set the LED strip to cycle the primary and secondary rgb colors in a loop,
-	with the primary color being the first three arguments and the secondary color being the next three arguments.
-	All rgb values are between 0 and 255. Returns the success value."""
-	return execute_remote_python(script_path=f'{config["LIGHT_SERVER_REPO_PATH"]}/LightServer/loop.py', args=[str(primary_red), str(primary_green), str(primary_blue), str(secondary_red), str(secondary_green), str(secondary_blue), "30", "1"])
+def set_color_loop(primary_hue: int, secondary_hue: int) -> str:
+	"""Set the LED strip to cycle the primary and secondary hues in a loop.
+	All hue values are between 0 and 360. Returns the success value."""
+	return execute_remote_python(script_path=f'{config["LIGHT_SERVER_REPO_PATH"]}/LightServer/generic.py', args=["loop", str(primary_hue), str(secondary_hue)])
+
+@tool
+def set_color_breathe(primary_hue: int, secondary_hue: int) -> str:
+	"""Set the LED strip to create a breathing effect with the primary and secondary hues.
+	All hue values are between 0 and 360. Returns the success value."""
+	return execute_remote_python(script_path=f'{config["LIGHT_SERVER_REPO_PATH"]}/LightServer/generic.py', args=["breathe", str(primary_hue), str(secondary_hue)])
 
 llm = ChatGoogleGenerativeAI(
 	model="gemini-2.5-flash", 

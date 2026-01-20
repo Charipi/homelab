@@ -1,4 +1,5 @@
 from rpi_ws281x import PixelStrip, Color
+from math import sin, pi
 import time
 import sys
 
@@ -25,9 +26,12 @@ def from_h(h):
         r, g, b = 1, 0, x
     return r, g, b
 
-def h(x, t, h1, h2):
-	h1 = h1 % 360
-	h2 = h2 % 360
+def solid(x, h):
+	return h[0]
+
+def loop(x, t, h):
+	h1 = h[0] % 360
+	h2 = h[1] % 360
 	if h2 - h1 > 180:
 		h1 += 360
 	p = x - t
@@ -40,17 +44,46 @@ def h(x, t, h1, h2):
 		return h1
 	if p > LED_COUNT * 0.6:
 		return h2
-	return (p - LED_COUNT * 0.4) / (LED_COUNT * 0.2) * (h2 - h1) + h1 
+	return (p - LED_COUNT * 0.4) / (LED_COUNT * 0.2) * (h2 - h1) + h1
+
+def breathe(x, t, h):
+	h1 = h[0] % 360
+	h2 = h[1] % 360
+	if h2 - h1 > 180:
+		h1 += 360
+	return (h2 - h1) / 2 * sin(t * pi / 60) + (h1 + h2) / 2
 
 if __name__ == "__main__":
-	h1 = int(sys.argv[1])
-	h2 = int(sys.argv[2])
-	t = 0
-	while True:
+	h = []
+	f = None
+	timed = False
+
+	method = sys.argv[1]
+	if method == "solid":
+		f = solid
+		h = [int(sys.argv[2])]
+	elif method == "loop":
+		f = loop
+		h = [int(sys.argv[2]), int(sys.argv[3])]
+		timed = True
+	elif method == "breathe":
+		f = breathe
+		h = [int(sys.argv[2]), int(sys.argv[3])]
+		timed = True
+
+	if timed:
+		t = 0
+		while True:
+			for x in range(LED_COUNT):
+				hue = f(x, t, h)
+				r, g, b = from_h(hue)
+				strip.setPixelColor(x, Color(int(r * 255), int(g * 255), int(b * 255)))
+			strip.show()
+			t += 1
+			time.sleep(0.03)
+	else:
 		for x in range(LED_COUNT):
-			hue = h(x, t, h1, h2)
+			hue = f(x, h)
 			r, g, b = from_h(hue)
 			strip.setPixelColor(x, Color(int(r * 255), int(g * 255), int(b * 255)))
 		strip.show()
-		t += 1
-		time.sleep(0.03)
