@@ -14,5 +14,3 @@ LIGHT_SERVER_HOST=*[Host to ssh into Raspberry Pi]*
     - Output to speakers
     - Running ssh commands without speaker pop
 - Handle too many request errors (i.e. switch to other model)
-- Set to run automatically on startup
-- Silence the output of pyaudio

@@ -33,7 +33,7 @@ llm = ChatGoogleGenerativeAI(
 	temperature=0, 
 	api_key=config["VOICE_CLIENT_GEMINI_API_KEY"])
 
-agent = create_agent(llm, [set_color, set_color_loop])
+agent = create_agent(llm, [set_color, set_color_loop, set_color_breathe])
 
 def run(command):
 	print("Running command:", command)
