@@ -26,8 +26,16 @@ def from_h(h):
     return r, g, b
 
 def h(x, t, h1, h2):
+	h1 = h1 % 360
+	h2 = h2 % 360
+	if h2 - h1 > 180:
+		h1 += 360
 	p = x - t
 	p = p % LED_COUNT
+	if p < LED_COUNT * 0.1:
+		return (p + LED_COUNT * 0.1) / (LED_COUNT * 0.2) * (h1 - h2) + h2 
+	if p > LED_COUNT * 0.9:
+		return (p - LED_COUNT * 0.9) / (LED_COUNT * 0.2) * (h1 - h2) + h2
 	if p < LED_COUNT * 0.4:
 		return h1
 	if p > LED_COUNT * 0.6:
@@ -37,13 +45,12 @@ def h(x, t, h1, h2):
 if __name__ == "__main__":
 	h1 = int(sys.argv[1])
 	h2 = int(sys.argv[2])
-	
 	t = 0
 	while True:
 		for x in range(LED_COUNT):
 			hue = h(x, t, h1, h2)
 			r, g, b = from_h(hue)
-			strip.setPixelColor(x, Color(r * 255, g * 255, b * 255))
+			strip.setPixelColor(x, Color(int(r * 255), int(g * 255), int(b * 255)))
 		strip.show()
 		t += 1
 		time.sleep(0.03)
